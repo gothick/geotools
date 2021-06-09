@@ -1,0 +1,21 @@
+{
+    "name": "gothick/geotools",
+    "description": "A few small tools related to GPX and geoJSON for use with One Mile Matt.",
+    "type": "library",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Matt Gibson",
+            "email": "gothick@gothick.org.uk"
+        }
+    ],
+    "autoload": {
+        "psr-4": {
+            "Location\\": "src/"
+        }
+    },
+    "minimum-stability": "stable",
+    "require": {
+        "php": ">=7.4"
+    }
+}
