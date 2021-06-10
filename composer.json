@@ -17,8 +17,6 @@
     "minimum-stability": "stable",
     "require": {
         "php": ">=7.4",
-        "mjaschen/phpgeo": "^3.2",
-        "krasilnikov-spb/php-rdp": "^0.3.0",
         "jordanbrauer/unit-converter": "dev-master",
         "rafaelfragoso/haversini-formula": "^2.0"
     },

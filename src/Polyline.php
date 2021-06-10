@@ -2,14 +2,14 @@
 
 namespace Gothick\Geotools;
 
+use ArrayAccess;
 use ArrayIterator;
 use Countable;
 use Gothick\Geotools\Coordinate;
 use IteratorAggregate;
-use PhpParser\Node\Expr\ArrayItem;
 use Traversable;
 
-class Polyline implements Countable, IteratorAggregate
+class Polyline implements Countable, IteratorAggregate, ArrayAccess
 {
     /** @var Coordinate[] */
     private $coords = [];
@@ -54,5 +54,24 @@ class Polyline implements Countable, IteratorAggregate
     public function getIterator(): Traversable
     {
         return new ArrayIterator($this->coords);
+    }
+
+    public function offsetExists($offset): bool
+    {
+        return isset($this->coords[$offset]);
+    }
+    public function offsetGet($offset)
+    {
+        return $this->coords[$offset];
+    }
+
+    // I don't think we'll actually use these, but hey...
+    public function offsetSet($offset, $value): void
+    {
+        $this->coords[$offset] = $value;
+    }
+    public function offsetUnset($offset): void
+    {
+        unset($this->coords[$offset]);
     }
 }

@@ -3,8 +3,9 @@
 use Gothick\Geotools\Coordinate;
 use PHPUnit\Framework\TestCase;
 use Gothick\Geotools\Polyline;
+use Gothick\Geotools\PolylineRdpSimplifier;
 
-final class PolylineTest extends TestCase
+final class PolylineRdpSimplifierTest extends TestCase
 {
     /** @var string */
     private $simpleGpxData;
@@ -67,39 +68,15 @@ final class PolylineTest extends TestCase
 EOT;
     }
 
-    public function testPolylineFromGpx(): void
+    public function testNoChangeSimplification(): void
     {
         $polyline = Polyline::fromGpxData($this->simpleGpxData);
-        $this->assertEquals(3, count($polyline), "Polyline should contain the three points from the GPX");
-        $this->assertTrue($polyline->containsPoint(51.450744699686766, -2.621252126991749), 'Polyline missing first GPX point');
-        $this->assertTrue($polyline->containsPoint(51.450771605595946, -2.621229244396091), 'Polyline missing second GPX point');
-        $this->assertTrue($polyline->containsPoint(51.450770935043693, -2.621175432577729), 'Polyline missing third GPX point');
-        $this->assertFalse($polyline->containsPoint(51, -2), "Polyline shouldn't contain arbitrary point");
-    }
-    public function testAddCoord(): void
-    {
-        $polyline = Polyline::fromGpxData($this->simpleGpxData);
-        $this->assertEquals(3, count($polyline), "Initial Polyline should have three points");
-        $polyline->addCoord(new Coordinate(0, 0));
-        $this->assertEquals(4, count($polyline), "Polyline should contain four points after addition of a new point.");
-        $this->assertTrue($polyline->containsPoint(0, 0), "Polyline should contain the point we just added.");
-    }
-    public function testIterator(): void
-    {
-        $polyline = Polyline::fromGpxData($this->simpleGpxData);
-        $items = 0;
-        foreach ($polyline as $coord) {
-            if ($items == 0) {
-                $this->assertTrue($coord->isSameLocationAs(new Coordinate(51.450744699686766, -2.621252126991749)), "Coord mismatch on iterator 0 element");
-            }
-            if ($items == 1) {
-                $this->assertTrue($coord->isSameLocationAs(new Coordinate(51.450771605595946, -2.621229244396091)), "Coord mismatch on iterator 1 element");
-            }
-            if ($items == 2) {
-                $this->assertTrue($coord->isSameLocationAs(new Coordinate(51.450770935043693, -2.621175432577729)), "Coord mismatch on iterator 2 element");
-            }
-            $items++;
-        }
-        $this->assertEquals($items, 3, "Iterator should have iterated three elements.");
+        $simplifier = new PolylineRdpSimplifier(1); // 1 metre should keep every point the same
+        $simplified = $simplifier->ramerDouglasPeucker($polyline);
+        $this->assertEquals(3, count($simplified), "Polyline should contain the three points from the GPX");
+        $this->assertTrue($simplified->containsPoint(51.450744699686766, -2.621252126991749), 'Polyline missing first GPX point');
+        $this->assertTrue($simplified->containsPoint(51.450771605595946, -2.621229244396091), 'Polyline missing second GPX point');
+        $this->assertTrue($simplified->containsPoint(51.450770935043693, -2.621175432577729), 'Polyline missing third GPX point');
+
     }
 }

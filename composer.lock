@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "8d70755bc339474b759be036d168e031",
+    "content-hash": "7a4b701904d2946a4193833f77732545",
     "packages": [
         {
             "name": "jordanbrauer/unit-converter",
@@ -56,129 +56,6 @@
                 "source": "https://github.com/jordanbrauer/unit-converter/tree/master"
             },
             "time": "2021-04-30T02:51:30+00:00"
-        },
-        {
-            "name": "krasilnikov-spb/php-rdp",
-            "version": "0.3.0",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/krasilnikov-spb/php-rdp.git",
-                "reference": "1c54d848bf1a42dd4f8b7025d43d80287e84cf43"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/krasilnikov-spb/php-rdp/zipball/1c54d848bf1a42dd4f8b7025d43d80287e84cf43",
-                "reference": "1c54d848bf1a42dd4f8b7025d43d80287e84cf43",
-                "shasum": ""
-            },
-            "require": {
-                "php": "^7.1"
-            },
-            "require-dev": {
-                "phpunit/phpunit": "^7"
-            },
-            "type": "library",
-            "autoload": {
-                "psr-4": {
-                    "phpRdp\\": "src"
-                }
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "authors": [
-                {
-                    "name": "Alexander Krasilnikov",
-                    "email": "alexander@krasilnikov.spb.ru",
-                    "homepage": "https://github.com/krasilnikov-spb/php-rdp",
-                    "role": "Developer"
-                }
-            ],
-            "description": "PHP implementation of the Ramer-Douglas-Peucker algorithm for reducing the number of points on a polyline",
-            "homepage": "https://github.com/krasilnikov-spb/php-rdp",
-            "keywords": [
-                "Douglas",
-                "Peucker",
-                "Ramer",
-                "polyline",
-                "simplify"
-            ],
-            "support": {
-                "issues": "https://github.com/krasilnikov-spb/php-rdp/issues",
-                "source": "https://github.com/krasilnikov-spb/php-rdp/tree/0.3.0"
-            },
-            "time": "2020-05-29T08:17:12+00:00"
-        },
-        {
-            "name": "mjaschen/phpgeo",
-            "version": "3.2.1",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/mjaschen/phpgeo.git",
-                "reference": "c26fd54ba2f792f6a286fe5738fea9ce1c33ed28"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/mjaschen/phpgeo/zipball/c26fd54ba2f792f6a286fe5738fea9ce1c33ed28",
-                "reference": "c26fd54ba2f792f6a286fe5738fea9ce1c33ed28",
-                "shasum": ""
-            },
-            "require": {
-                "php": ">=7.2"
-            },
-            "require-dev": {
-                "phpunit/phpunit": "^8.0",
-                "squizlabs/php_codesniffer": "^3.5",
-                "vimeo/psalm": "^3.12"
-            },
-            "type": "library",
-            "autoload": {
-                "psr-4": {
-                    "Location\\": "src/"
-                }
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "MIT"
-            ],
-            "authors": [
-                {
-                    "name": "Marcus Jaschen",
-                    "email": "mjaschen@gmail.com",
-                    "homepage": "https://www.marcusjaschen.de/"
-                }
-            ],
-            "description": "Simple Yet Powerful Geo Library",
-            "homepage": "https://phpgeo.marcusjaschen.de/",
-            "keywords": [
-                "Polygon",
-                "area",
-                "bearing",
-                "bounds",
-                "calculation",
-                "coordinate",
-                "distance",
-                "earth",
-                "ellipsoid",
-                "geo",
-                "geofence",
-                "gis",
-                "gps",
-                "haversine",
-                "length",
-                "perpendicular",
-                "point",
-                "polyline",
-                "projection",
-                "simplify",
-                "track",
-                "vincenty"
-            ],
-            "support": {
-                "docs": "https://phpgeo.marcusjaschen.de/Installation.html",
-                "email": "mjaschen@gmail.com",
-                "issues": "https://github.com/mjaschen/phpgeo/issues",
-                "source": "https://github.com/mjaschen/phpgeo/tree/3.2.1"
-            },
-            "time": "2021-03-04T10:03:03+00:00"
         },
         {
             "name": "rafaelfragoso/haversini-formula",
