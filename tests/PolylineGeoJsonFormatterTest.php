@@ -4,9 +4,12 @@ use Gothick\Geotools\Coordinate;
 use PHPUnit\Framework\TestCase;
 
 use Gothick\Geotools\Polyline;
-use phpRdp\phpRdp;
+use Gothick\Geotools\PolylineGeoJsonFormatter;
 
-final class PolylineTest extends TestCase
+use function PHPUnit\Framework\assertEmpty;
+use function PHPUnit\Framework\assertEquals;
+
+final class PolylineGeoJsonFormatterTest extends TestCase
 {
     /** @var string */
     private $simpleGpxData;
@@ -69,39 +72,50 @@ final class PolylineTest extends TestCase
 EOT;
     }
 
-    public function testPolylineFromGpx(): void
+    public function testJsonIsActuallyJson(): void
     {
         $polyline = Polyline::fromGpxData($this->simpleGpxData);
-        $this->assertEquals(3, count($polyline), "Polyline should contain the three points from the GPX");
-        $this->assertTrue($polyline->containsPoint(51.450744699686766, -2.621252126991749), 'Polyline missing first GPX point');
-        $this->assertTrue($polyline->containsPoint(51.450771605595946, -2.621229244396091), 'Polyline missing second GPX point');
-        $this->assertTrue($polyline->containsPoint(51.450770935043693, -2.621175432577729), 'Polyline missing third GPX point');
-        $this->assertFalse($polyline->containsPoint(51, -2), "Polyline shouldn't contain arbitrary point");
+        $formatter = new PolylineGeoJsonFormatter();
+        $geoJson = $formatter->format($polyline);
+        $this->assertNotNull(json_decode($geoJson));
     }
-    public function testAddCoord(): void
+    public function testType(): void
     {
         $polyline = Polyline::fromGpxData($this->simpleGpxData);
-        $this->assertEquals(3, count($polyline), "Initial Polyline should have three points");
-        $polyline->addCoord(new Coordinate(0, 0));
-        $this->assertEquals(4, count($polyline), "Polyline should contain four points after addition of a new point.");
-        $this->assertTrue($polyline->containsPoint(0, 0), "Polyline should contain the point we just added.");
+        $formatter = new PolylineGeoJsonFormatter();
+        $geoJson = $formatter->format($polyline);
+        $decoded = json_decode($geoJson, true);
+        $this->assertEquals($decoded['type'], 'LineString', 'GeoJSON type field should be LineString');
     }
-    public function testIterator(): void
+    public function testCoords(): void
     {
         $polyline = Polyline::fromGpxData($this->simpleGpxData);
-        $items = 0;
-        foreach ($polyline as $coord) {
-            if ($items == 0) {
-                $this->assertTrue($coord->isSameLocationAs(new Coordinate(51.450744699686766, -2.621252126991749)), "Coord mismatch on iterator 0 element");
-            }
-            if ($items == 1) {
-                $this->assertTrue($coord->isSameLocationAs(new Coordinate(51.450771605595946, -2.621229244396091)), "Coord mismatch on iterator 1 element");
-            }
-            if ($items == 2) {
-                $this->assertTrue($coord->isSameLocationAs(new Coordinate(51.450770935043693, -2.621175432577729)), "Coord mismatch on iterator 2 element");
-            }
-            $items++;
-        }
-        $this->assertEquals($items, 3, "Iterator should have iterated three elements.");
+        $formatter = new PolylineGeoJsonFormatter();
+        $geoJson = $formatter->format($polyline);
+        $decoded = json_decode($geoJson, true);
+
+        $this->assertCount(3, $decoded['coordinates'], 'GeoJSON should have three coordinates');
+
+        $coord0 = $decoded['coordinates'][0];
+        $this->assertCount(2, $coord0);
+        // NB Longitude comes first with geoJSON
+        $this->assertEqualsWithDelta($coord0[0], -2.621252126991749, 0.00000001, 'Point 0 incorrect longitude');
+        $this->assertEqualsWithDelta($coord0[1], 51.450744699686766, 0.00000001, 'Point 0 incorrect latitude');
+
+        $coord1 = $decoded['coordinates'][1];
+        $this->assertCount(2, $coord1);
+        // NB Longitude comes first with geoJSON
+        $this->assertEqualsWithDelta($coord1[0], -2.621229244396091, 0.00000001, 'Point 1 incorrect longitude');
+        $this->assertEqualsWithDelta($coord1[1], 51.450771605595946, 0.00000001, 'Point 1 incorrect latitude');
+
+        $coord2 = $decoded['coordinates'][2];
+        $this->assertCount(2, $coord2);
+        // NB Longitude comes first with geoJSON
+        $this->assertEqualsWithDelta($coord2[0], -2.621175432577729, 0.00000001, 'Point 2 incorrect longitude');
+        $this->assertEqualsWithDelta($coord2[1], 51.450770935043693, 0.00000001, 'Point 2 incorrect latitude');
     }
+
+    // TODO: Probably want to test what happens if there's only one point, say, or zero:
+    // what does an invalid GeoJSON LineString actually look like? Also: maybe test for
+    // additional properties that shouldn't be present.
 }
