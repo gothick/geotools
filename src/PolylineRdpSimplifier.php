@@ -130,7 +130,7 @@ class PolylineRdpSimplifier
      * @return array - simplified track
      * @throws string - in case of absence or incorrect data in path
      */
-    public function ramerDouglasPeucker(Polyline $polyline)
+    public function ramerDouglasPeucker(Polyline $polyline): Polyline
     {
         $epsilon = $this->epsilon;
         $pointList_short = [];
@@ -147,7 +147,6 @@ class PolylineRdpSimplifier
         foreach ($pointList_short as $foo => $point){
             $output->addCoord($polyline[$point['key']]);
         }
-
         return $output;
     }
 
