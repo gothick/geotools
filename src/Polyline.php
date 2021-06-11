@@ -5,6 +5,7 @@ namespace Gothick\Geotools;
 use ArrayAccess;
 use ArrayIterator;
 use Countable;
+use Exception;
 use Gothick\Geotools\Coordinate;
 use IteratorAggregate;
 use Traversable;
@@ -46,7 +47,29 @@ class Polyline implements Countable, IteratorAggregate, ArrayAccess
         return false;
     }
 
-    public function count():int
+    /**
+     * Warning: not actually a centroid. If this were a real centroid function I'd
+     * probably be calculating the convex hull or at least the bounding box, paying
+     * attention to great circle distance, caring about crossing the dateline and
+     * all sorts of things. For my purposes--walking around Bristol--just the average
+     * of the latitudes and longitudes is good enough for now.
+     */
+    public function getCentroid(): Coordinate
+    {
+        $count = count($this->coords);
+        if ($count == 0) {
+            throw new Exception("Can't find the centre point of a zero-length Polyline");
+        }
+        // "Centroid" my backside. Just average the latitudes and longitudes. I feel a
+        // bit dirty doing this with a Coordinate as the sum aggregator, but it's
+        // convenient.
+        $summed = array_reduce($this->coords, function(Coordinate $carry, Coordinate $coord) {
+            return new Coordinate($carry->getLat() + $coord->getLat(), $carry->getLng() + $coord->getLng());
+        }, new Coordinate(0, 0));
+        return new Coordinate($summed->getLat() / $count, $summed->getLng() / $count);
+    }
+
+    public function count(): int
     {
         return count($this->coords);
     }
