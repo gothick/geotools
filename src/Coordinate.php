@@ -18,17 +18,28 @@ class Coordinate
         $this->lat = $lat;
         $this->lng = $lng;
     }
-    public function getLat(): float
+    private function round(float $val, ?float $precision): float
     {
-        return $this->lat;
+        if ($precision === null) {
+            return $val;
+        }
+        return round($val, $precision);
     }
-    public function getLng(): float
+    public function getLat(?float $precision = null): float
     {
-        return $this->lng;
+        return $this->round($this->lat, $precision);
+    }
+    public function getLng(?float $precision = null): float
+    {
+        return $this->round($this->lng, $precision);
     }
     public function isSameLocationAs(Coordinate $compare, float $toleranceMetres = 0.001): bool
     {
         $distance = Haversini::calculate($this->getLat(), $this->getLng(), $compare->getLat(), $compare->getLng(), 'm');
         return $distance <= $toleranceMetres;
+    }
+    public static function rounded(self $in, ?float $precision = null): self
+    {
+        return new self($in->getLat($precision), $in->getLng($precision));
     }
 }

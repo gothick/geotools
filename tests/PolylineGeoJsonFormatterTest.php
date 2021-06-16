@@ -114,6 +114,23 @@ EOT;
         $this->assertEqualsWithDelta($coord2[0], -2.621175432577729, 0.00000001, 'Point 2 incorrect longitude');
         $this->assertEqualsWithDelta($coord2[1], 51.450770935043693, 0.00000001, 'Point 2 incorrect latitude');
     }
+    public function testRounding(): void
+    {
+        $polyline = Polyline::fromGpxData($this->simpleGpxData);
+        $formatter = new PolylineGeoJsonFormatter(5); // Output precision
+        $geoJson = $formatter->format($polyline);
+
+        $decoded = json_decode($geoJson, true);
+        $coord0 = $decoded['coordinates'][0];
+        $coord1 = $decoded['coordinates'][1];
+        $coord2 = $decoded['coordinates'][2];
+        $this->assertEquals($coord0[0], -2.62125, "Coord 0 latitude incorrectly rounded");
+        $this->assertEquals($coord0[1], 51.45074, "Coord 0 longitude incorrectly rounded");
+        $this->assertEquals($coord1[0], -2.62123, "Coord 1 latitude incorrectly rounded");
+        $this->assertEquals($coord1[1], 51.45077, "Coord 1 longitude incorrectly rounded");
+        $this->assertEquals($coord2[0], -2.62118, "Coord 2 latitude incorrectly rounded");
+        $this->assertEquals($coord2[1], 51.45077, "Coord 2 longitude incorrectly rounded");
+    }
 
     // TODO: Probably want to test what happens if there's only one point, say, or zero:
     // what does an invalid GeoJSON LineString actually look like? Also: maybe test for

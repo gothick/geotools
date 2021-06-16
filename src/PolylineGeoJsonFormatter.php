@@ -8,6 +8,14 @@ use Gothick\Geotools\Coordinate;
 
 class PolylineGeoJsonFormatter implements IPolylineFormatter
 {
+    /** @var int */
+    private $precision;
+
+    public function __construct(?float $coordPrecision = null)
+    {
+        $this->precision = $coordPrecision;
+    }
+
     public function format(Polyline $polyline): string
     {
         $result = [
@@ -17,7 +25,7 @@ class PolylineGeoJsonFormatter implements IPolylineFormatter
 
         /** @var Coordinate $coord */
         foreach ($polyline as $coord) {
-            array_push($result['coordinates'], [$coord->getLng(), $coord->getLat()]);
+            array_push($result['coordinates'], [$coord->getLng($this->precision), $coord->getLat($this->precision)]);
         }
         return json_encode($result);
     }
