@@ -23,10 +23,29 @@ class PolylineGeoJsonFormatter implements IPolylineFormatter
             'coordinates' => []
         ];
 
+        // Going fully manual rather than using json_encode because json_encode
+        // seems to introduce unwarranted levels of precision, and is at the mercy
+        // of serialize_precision https://stackoverflow.com/questions/42981409/php7-1-json-encode-float-issue
+
+        // e.g.  { "type": "LineString", "coordinates": [ [100.0, 0.0], [101.0, 1.0] ]}
+        // e.g. {"type":"LineString","coordinates":[[-2.6212521269917][51.450744699687],[-2.6212292443961][51.450771605596],[-2.6211754325777][51.450770935044]]}
+
+        $json = '{"type":"LineString","coordinates":[';
+
         /** @var Coordinate $coord */
+        $coords = [];
         foreach ($polyline as $coord) {
-            array_push($result['coordinates'], [$coord->getLng($this->precision), $coord->getLat($this->precision)]);
+            $lat = $coord->getLat();
+            $lng = $coord->getLng();
+            if ($this->precision !== null) {
+                $lat = round($lat, $this->precision);
+                $lng = round($lng, $this->precision);
+            }
+            $coords[] = '[' . $lng . ', ' . $lat . ']';
         }
-        return json_encode($result);
+        $json .= implode(",", $coords);
+        // return json_encode($result);
+        $json .= ']}';
+        return $json;
     }
 }

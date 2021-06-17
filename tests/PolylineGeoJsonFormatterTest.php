@@ -114,7 +114,7 @@ EOT;
         $this->assertEqualsWithDelta($coord2[0], -2.621175432577729, 0.00000001, 'Point 2 incorrect longitude');
         $this->assertEqualsWithDelta($coord2[1], 51.450770935043693, 0.00000001, 'Point 2 incorrect latitude');
     }
-    public function testRounding(): void
+    public function testPrecision(): void
     {
         $polyline = Polyline::fromGpxData($this->simpleGpxData);
         $formatter = new PolylineGeoJsonFormatter(5); // Output precision
@@ -124,6 +124,7 @@ EOT;
         $coord0 = $decoded['coordinates'][0];
         $coord1 = $decoded['coordinates'][1];
         $coord2 = $decoded['coordinates'][2];
+
         $this->assertEquals($coord0[0], -2.62125, "Coord 0 latitude incorrectly rounded");
         $this->assertEquals($coord0[1], 51.45074, "Coord 0 longitude incorrectly rounded");
         $this->assertEquals($coord1[0], -2.62123, "Coord 1 latitude incorrectly rounded");
