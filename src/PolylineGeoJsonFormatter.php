@@ -18,11 +18,6 @@ class PolylineGeoJsonFormatter implements IPolylineFormatter
 
     public function format(Polyline $polyline): string
     {
-        $result = [
-            'type' => 'LineString',
-            'coordinates' => []
-        ];
-
         // Going fully manual rather than using json_encode because json_encode
         // seems to introduce unwarranted levels of precision, and is at the mercy
         // of serialize_precision https://stackoverflow.com/questions/42981409/php7-1-json-encode-float-issue
