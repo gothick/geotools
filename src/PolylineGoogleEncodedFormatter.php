@@ -1,5 +1,15 @@
 <?php
 
+/**
+ * Implementation of Google Maps' Encoded Polyline Algorithm Format
+ * https://developers.google.com/maps/documentation/utilities/polylinealgorithm
+ *
+ * This is not exactly an efficient implementation; it's my literal first attempt,
+ * and I'm only putting my own walking routes on a single website, for my own use,
+ * and I cache the encoded lines anyway, so if you're looking for code to copy,
+ * someone else's might be better...
+ */
+
 namespace Gothick\Geotools;
 
 use Gothick\Geotools\IPolylineFormatter;
@@ -11,36 +21,37 @@ class PolylineGoogleEncodedFormatter implements IPolylineFormatter
     /** @var int */
     private $precision;
 
-    public function __construct(?float $coordPrecision = null)
+    public function __construct()
     {
-        $this->precision = $coordPrecision;
+    }
+
+    // Based on example at https://developers.google.com/maps/documentation/utilities/polylinealgorithm.
+    private function encode(int $val): string {
+        $output = "";
+        $val = $val < 0 ? ~($val << 1) : ($val << 1 );
+        while (($val & ~0b11111) != 0) {
+            $output .= chr((($val & 0b11111) | 0b100000) + 63);
+            $val = $val >> 5;
+        }
+        $output .= chr($val + 63);
+        return $output;
     }
 
     public function format(Polyline $polyline): string
     {
-        // Going fully manual rather than using json_encode because json_encode
-        // seems to introduce unwarranted levels of precision, and is at the mercy
-        // of serialize_precision https://stackoverflow.com/questions/42981409/php7-1-json-encode-float-issue
-
-        // e.g.  { "type": "LineString", "coordinates": [ [100.0, 0.0], [101.0, 1.0] ]}
-        // e.g. {"type":"LineString","coordinates":[[-2.6212521269917][51.450744699687],[-2.6212292443961][51.450771605596],[-2.6211754325777][51.450770935044]]}
-
-        $json = '{"type":"LineString","coordinates":[';
-
         /** @var Coordinate $coord */
-        $coords = [];
+        $encoded = "";
+        $prevlat = 0;
+        $prevlng = 0;
         foreach ($polyline as $coord) {
-            $lat = $coord->getLat();
-            $lng = $coord->getLng();
-            if ($this->precision !== null) {
-                $lat = round($lat, $this->precision);
-                $lng = round($lng, $this->precision);
-            }
-            $coords[] = '[' . $lng . ', ' . $lat . ']';
+            $lat = (int) round($coord->getLat() * 100000);
+            $lng = (int) round($coord->getLng() * 100000);
+            $deltaLat = $lat - $prevlat;
+            $deltaLng = $lng - $prevlng;
+            $prevlat = $lat;
+            $prevlng = $lng;
+            $encoded .= $this->encode($deltaLat) . $this->encode($deltaLng);
         }
-        $json .= implode(",", $coords);
-        // return json_encode($result);
-        $json .= ']}';
-        return $json;
+        return $encoded;
     }
 }
