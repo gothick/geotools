@@ -126,8 +126,8 @@ class PolylineRdpSimplifier
      * RamerDouglasPeucker
      * Do initial prepare of data and call doRamerDouglasPeucker for simplification.
      *
-     * @param $pointList - array of track. Each value of array represents one geopoint.
-     * @return array - simplified track
+     * @param $pointList - Track Polyline. Each value of array represents one geopoint.
+     * @return Polyline - simplified track
      * @throws string - in case of absence or incorrect data in path
      */
     public function ramerDouglasPeucker(Polyline $polyline): Polyline
