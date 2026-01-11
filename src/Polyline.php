@@ -83,7 +83,7 @@ class Polyline implements Countable, IteratorAggregate, ArrayAccess
     {
         return isset($this->coords[$offset]);
     }
-    public function offsetGet($offset)
+    public function offsetGet($offset): mixed
     {
         return $this->coords[$offset];
     }
